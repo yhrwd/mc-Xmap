@@ -1,7 +1,7 @@
 <template>
-  <div class="floating-controls">
-    <div class="zoom-pill" title="当前缩放">{{ zoomPercent }}%</div>
+  <div class="zoom-pill" title="当前缩放">{{ zoomPercent }}%</div>
 
+  <div class="floating-controls">
     <button class="control-btn" @click="handleZoomIn" title="放大">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10" />
@@ -98,10 +98,14 @@ onUnmounted(() => {
 }
 
 .zoom-pill {
+  position: fixed;
+  right: 14px;
+  top: 12px;
+  z-index: 95;
   min-width: 58px;
   height: 28px;
-  border-radius: 999px;
-  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+  border: 2px solid var(--ui-border);
   background: color-mix(in oklab, var(--morandi-cream) 76%, #000000 24%);
   color: #ffd6c7;
   display: inline-flex;
@@ -116,8 +120,8 @@ onUnmounted(() => {
   width: 42px;
   height: 42px;
   background: color-mix(in oklab, var(--morandi-cream) 72%, #000000 28%);
-  border: 1px solid var(--ui-border);
-  border-radius: 10px;
+  border: 2px solid var(--ui-border);
+  border-radius: 8px;
   color: var(--ui-ink);
   cursor: pointer;
   display: flex;
@@ -128,7 +132,7 @@ onUnmounted(() => {
 }
 
 .control-btn:hover {
-  background: color-mix(in oklab, var(--morandi-clay) 24%, var(--morandi-stone) 76%);
+  background: rgba(82, 66, 60, 0.95);
 }
 
 .control-btn svg {

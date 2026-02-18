@@ -57,8 +57,8 @@ function jumpToMarker(marker: Marker) {
 }
 
 .marker-fab {
-  border: 1px solid color-mix(in oklab, var(--morandi-clay) 56%, #000000 44%);
-  border-radius: 999px;
+  border: 2px solid var(--ui-border);
+  border-radius: 8px;
   height: 38px;
   padding: 0 14px;
   background: linear-gradient(
@@ -69,7 +69,7 @@ function jumpToMarker(marker: Marker) {
   color: var(--ui-ink);
   cursor: pointer;
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
   box-shadow: var(--ui-shadow);
   transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
@@ -89,13 +89,17 @@ function jumpToMarker(marker: Marker) {
 }
 
 .marker-fab.open {
-  border-color: color-mix(in oklab, var(--morandi-clay) 66%, #000000 34%);
+  border-color: var(--ui-border);
   transform: translateY(-1px);
   background: linear-gradient(
     145deg,
     color-mix(in oklab, var(--morandi-clay) 20%, var(--morandi-cream) 80%),
     color-mix(in oklab, var(--morandi-stone) 76%, #000000 24%)
   );
+}
+
+.marker-fab:hover {
+  background: rgba(82, 66, 60, 0.95);
 }
 
 .marker-popover {
@@ -147,13 +151,13 @@ function jumpToMarker(marker: Marker) {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
   padding-right: 2px;
 }
 
 .marker-item {
-  border: 1px solid var(--ui-border);
-  border-radius: 12px;
+  border: 2px solid var(--ui-border);
+  border-radius: 8px;
   background: rgba(21, 17, 15, 0.82);
   color: var(--ui-ink);
   cursor: pointer;
@@ -166,8 +170,8 @@ function jumpToMarker(marker: Marker) {
 }
 
 .marker-item:hover {
-  border-color: color-mix(in oklab, var(--morandi-clay) 62%, #000000 38%);
-  background: rgba(31, 24, 21, 0.84);
+  border-color: var(--ui-border);
+  background: rgba(44, 34, 30, 0.9);
   transform: translateX(1px);
 }
 

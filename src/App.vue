@@ -36,7 +36,7 @@ onMounted(async () => {
 
 .map-container {
   position: fixed;
-  top: 52px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
