@@ -60,9 +60,9 @@ onMounted(async () => {
 .crosshair::after {
   content: '';
   position: absolute;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.99);
   /* 添加细边框增强对比度，可选 */
-  border: 0.5px solid rgba(0, 0, 0, 0.5);
+  border: 0.5px solid rgba(255, 178, 178, 0.823);
 }
 
 /* 垂直竖线 */

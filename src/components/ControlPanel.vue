@@ -52,7 +52,7 @@ function jumpToMarker(marker: Marker) {
 .marker-fab-wrap {
   position: fixed;
   left: 14px;
-  top: 64px;
+  top: 14px;
   z-index: 97;
 }
 
@@ -60,7 +60,7 @@ function jumpToMarker(marker: Marker) {
   border: 2px solid var(--ui-border);
   border-radius: 8px;
   height: 38px;
-  padding: 0 14px;
+  padding: 0 12px;
   background: linear-gradient(
     145deg,
     color-mix(in oklab, var(--morandi-cream) 68%, #000000 32%),
@@ -105,7 +105,7 @@ function jumpToMarker(marker: Marker) {
 .marker-popover {
   position: fixed;
   left: 14px;
-  top: 104px;
+  top: 64px;
   z-index: 97;
   width: min(380px, calc(100vw - 28px));
   max-height: min(68vh, 560px);
@@ -221,7 +221,7 @@ function jumpToMarker(marker: Marker) {
 
   .marker-popover {
     left: 10px;
-    top: 98px;
+    top: 104px;
   }
 }
 </style>

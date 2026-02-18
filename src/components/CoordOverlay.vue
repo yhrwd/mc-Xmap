@@ -35,7 +35,7 @@ const netherZ = computed(() => Math.floor(centerZ.value / 8))
   background: color-mix(in oklab, var(--morandi-cream) 76%, #000000 24%);
   box-shadow: var(--ui-shadow);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  min-width: 188px;
+  min-width: 120px;
 }
 
 .row {
