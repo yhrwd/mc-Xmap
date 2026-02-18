@@ -1,0 +1,36 @@
+{
+  "name": "mc-map-viewer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "process-map": "node scripts/process-map.cjs ./map ./public/tiles 90 8",
+    "generate-mips": "node scripts/generate-mip-pyramid.cjs ./public/tiles 8",
+    "type-check": "vue-tsc --noEmit",
+    "format": "prettier --write --experimental-cli src/"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "tailwindcss": "^4.1.18",
+    "vue": "^3.5.27"
+  },
+  "devDependencies": {
+    "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^24.10.9",
+    "@vitejs/plugin-vue": "^6.0.3",
+    "@vue/tsconfig": "^0.8.1",
+    "npm-run-all2": "^8.0.4",
+    "prettier": "^3.8.1",
+    "sharp": "^0.34.5",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-vue-devtools": "^8.0.5",
+    "vue-tsc": "^3.2.4"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}
