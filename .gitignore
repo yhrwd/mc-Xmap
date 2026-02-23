@@ -44,8 +44,9 @@ __screenshots__/
 *.jpeg
 *.webp
 
+map/map*
+
 # json files
 manifest.json
 overlays.json
-markers.json
 tile-index.json

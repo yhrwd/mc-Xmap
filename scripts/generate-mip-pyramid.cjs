@@ -18,6 +18,18 @@ function getKey(x, z) {
   return `${x}_${z}`
 }
 
+function formatBytes(bytes) {
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  let value = Number(bytes)
+  let idx = 0
+  while (value >= 1024 && idx < units.length - 1) {
+    value /= 1024
+    idx += 1
+  }
+  const fixed = value >= 10 || idx === 0 ? 0 : 1
+  return `${value.toFixed(fixed)}${units[idx]}`
+}
+
 function parseArgs() {
   const args = process.argv.slice(2)
   return {
@@ -77,6 +89,16 @@ async function main() {
   const { tilesDir, maxLevels } = parseArgs()
   const indexPath = path.join(tilesDir, 'tile-index.json')
   const mipRoot = path.join(tilesDir, 'mip')
+  const startedAt = Date.now()
+  let peakRss = 0
+  let peakHeap = 0
+
+  const usageText = () => {
+    const mem = process.memoryUsage()
+    if (mem.rss > peakRss) peakRss = mem.rss
+    if (mem.heapUsed > peakHeap) peakHeap = mem.heapUsed
+    return `rss=${formatBytes(mem.rss)}, heap=${formatBytes(mem.heapUsed)}`
+  }
 
   if (!fs.existsSync(indexPath)) {
     console.error(`Error: tile-index.json not found at ${indexPath}`)
@@ -89,6 +111,9 @@ async function main() {
     console.error('Error: no base tiles in tile-index.json')
     process.exit(1)
   }
+
+  console.log(`MIP start: baseTiles=${baseTiles.length}, maxLevels=${maxLevels}, tilesDir=${tilesDir}`)
+  console.log('L0 uses existing base tiles from tile-index.json (no new files generated).')
 
   clearDir(mipRoot)
   ensureDir(mipRoot)
@@ -115,6 +140,7 @@ async function main() {
   })
 
   for (let level = 1; level <= maxLevels; level++) {
+    const levelStarted = Date.now()
     const prevWorldSize = TILE_SIZE * 2 ** (level - 1)
     const worldSize = prevWorldSize * 2
     const levelDir = path.join(mipRoot, `l${level}`)
@@ -132,8 +158,11 @@ async function main() {
       }
     }
 
+    const groups = Array.from(grouped.values())
     const nextTiles = []
-    for (const group of grouped.values()) {
+    let completed = 0
+    console.log(`L${level} building: parents=${groups.length}, fromChildren=${currentLevelTiles.length}`)
+    for (const group of groups) {
       const filename = `${group.x}_${group.z}.webp`
       const outputPath = path.join(levelDir, filename)
       await buildParentTile(group, prevWorldSize, outputPath)
@@ -144,6 +173,10 @@ async function main() {
         path: `/tiles/mip/l${level}/${filename}`,
         sourcePath: outputPath,
       })
+      completed += 1
+      if (completed % 200 === 0 || completed === groups.length) {
+        console.log(`[L${level}] [${completed}/${groups.length}] ${usageText()}`)
+      }
     }
 
     if (nextTiles.length === 0) break
@@ -162,6 +195,8 @@ async function main() {
     })
 
     currentLevelTiles = nextTiles
+    const levelElapsed = ((Date.now() - levelStarted) / 1000).toFixed(1)
+    console.log(`L${level} done: tiles=${nextTiles.length}, elapsed=${levelElapsed}s`)
     if (nextTiles.length <= 1) break
   }
 
@@ -175,11 +210,15 @@ async function main() {
   const manifestPath = path.join(mipRoot, 'manifest.json')
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2))
 
+  const elapsedSec = ((Date.now() - startedAt) / 1000).toFixed(1)
   console.log(`Generated mip pyramid: ${levels.length} levels`)
   for (const level of levels) {
     console.log(`L${level.level}: ${level.count} tiles, worldSize=${level.worldSize}`)
   }
   console.log(`Manifest: ${manifestPath}`)
+  console.log(`MIP elapsed: ${elapsedSec}s`)
+  console.log(`MIP memory: ${usageText()}`)
+  console.log(`MIP peak memory: rss=${formatBytes(peakRss)}, heap=${formatBytes(peakHeap)}`)
 }
 
 main().catch((err) => {

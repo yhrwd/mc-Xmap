@@ -39,11 +39,11 @@ function getMemoryUsage() {
 
 function printUsage() {
   console.log(`用法:
-  node merge.js [选项]
+  node scripts/merge-map.cjs [选项]
 
 选项:
-  --base-path <path>    包含 map* 目录的路径，默认 "."
-  --output-dir <path>   输出目录，默认 "merged_chunks"
+  --base-path <path>    包含 map* 目录的路径，默认 "./map"
+  --output-dir <path>   输出目录，默认 "./map/merged_map"
   --prefix <name>       输出文件名前缀，默认 "chunk"
   --tile-size <n>       瓦片大小，默认 1024
   --base-x <n>          自动生成 chunk 的基准 x，默认 -512
@@ -64,8 +64,8 @@ function parseIntArg(name, value) {
 
 function parseArgs(argv) {
   const args = {
-    basePath: ".",
-    outputDir: "merged_chunks",
+    basePath: "map",
+    outputDir: path.join("map", "merged_map"),
     prefix: "chunk",
     tileSize: 1024,
     baseX: -512,
@@ -853,7 +853,7 @@ async function main() {
       }
       const done = i + 1;
       if (done % 200 === 0 || done === total) {
-        console.log(`[${done}/${total}] saved=${saved}, skipped=${skipped}, ${usageText()}`);
+        console.log(`[${done}/${total}] saved=${saved}, skipped=${skipped}`);
       }
     }
   } else {
@@ -878,7 +878,7 @@ async function main() {
         completed += 1;
 
         if (completed % 200 === 0 || completed === total) {
-          console.log(`[${completed}/${total}] saved=${saved}, skipped=${skipped}, ${usageText()}`);
+          console.log(`[${completed}/${total}] saved=${saved}, skipped=${skipped}`);
         }
       }
     });

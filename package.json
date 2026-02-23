@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "process-map": "node scripts/process-map.cjs ./map ./public/tiles 90 8",
+    "merge-map": "node scripts/merge-map.cjs --base-path ./map --output-dir ./map/merged_map --workers 2",
+    "process-map": "node scripts/process-map.cjs ./map/merged_map ./public/tiles 90 8 8",
+    "pipeline-map": "node scripts/pipeline-map.cjs",
     "generate-mips": "node scripts/generate-mip-pyramid.cjs ./public/tiles 8",
     "type-check": "vue-tsc --noEmit",
     "format": "prettier --write --experimental-cli src/"
