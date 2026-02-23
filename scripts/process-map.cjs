@@ -13,7 +13,7 @@ try {
 }
 
 const TILE_SIZE = 1024
-const FILE_RE = /^.*?_x(-?\d+)_z(-?\d+)\.png$/i
+const FILE_RE = /^.*?x(-?\d+)_z(-?\d+)\.png$/i
 
 function parseTileName(filename) {
   const m = filename.match(FILE_RE)
