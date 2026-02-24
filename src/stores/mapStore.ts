@@ -1,6 +1,6 @@
 import { ref, computed, reactive } from 'vue'
 import type { WorldCoord, CameraState, Marker, TileIndex, TileInfo } from '@/types'
-import { getMarkersUrl, getTileIndexUrl } from '@/config/mapSource'
+import { getMarkersUrl, getTileIndexUrl, getMarkersPartUrls } from '@/config/mapSource'
 
 // 瓦片尺寸常量
 export const TILE_SIZE = 1024
@@ -221,18 +221,46 @@ export async function loadTileIndex(): Promise<void> {
   }
 }
 
-// 加载标记
+// 简单的 markers_*.json 文件加载（无索引）
+const loadedMarkerFiles = ref<Set<string>>(new Set<string>())
+
 export async function loadMarkers(): Promise<void> {
   try {
+    // 尝试加载旧格式（兼容性）
     const response = await fetch(getMarkersUrl())
     if (response.ok) {
-      markers.value = await response.json()
-      console.log('Markers loaded:', markers.value.length)
+      const markersData = await response.json()
+      markers.value = markersData
+      console.log('Markers loaded (legacy format):', markers.value.length)
+      return
     }
   } catch (error) {
-    console.warn('Failed to load markers:', error)
-    markers.value = []
+    // 忽略错误，继续尝试新格式
   }
+
+  // 加载所有 markers_*.json 文件
+  const urls = await getMarkersPartUrls()
+  console.log('Detected marker files:', urls)
+
+  const allMarkers: Marker[] = []
+  for (const url of urls) {
+    try {
+      if (loadedMarkerFiles.value.has(url)) continue
+
+      const response = await fetch(url)
+      if (response.ok) {
+        const markersData: Marker[] = await response.json()
+        allMarkers.push(...markersData)
+        loadedMarkerFiles.value.add(url)
+        console.log(`Loaded markers from ${url}:`, markersData.length, 'markers')
+      }
+    } catch (error) {
+      console.warn(`Failed to load ${url}:`, error)
+    }
+  }
+
+  markers.value = allMarkers
+  console.log('Total markers loaded:', markers.value.length)
 }
 
 // 添加标记

@@ -1,9 +1,5 @@
 <template>
-  <canvas
-    ref="canvasRef"
-    class="map-canvas"
-    :class="{ 'grabbing': isDragging }"
-  />
+  <canvas ref="canvasRef" class="map-canvas" :class="{ grabbing: isDragging }" />
 </template>
 
 <script setup lang="ts">
@@ -27,18 +23,21 @@ const syncViewport = () => {
 useMapInteraction(canvasRef, {
   onRender: () => {
     requestRender(markers.value)
-  }
+  },
 })
 
 // 监听相机变化，重新渲染
-watch(() => [camera.x, camera.z, camera.zoom], () => {
-  requestRender(markers.value)
-  
-  // 在相机变化时异步加载缺失的瓦片
-  if (!isDragging.value) {
-    loadMissingTiles(markers.value)
-  }
-})
+watch(
+  () => [camera.x, camera.z, camera.zoom],
+  () => {
+    requestRender(markers.value)
+
+    // 在相机变化时异步加载缺失的瓦片
+    if (!isDragging.value) {
+      loadMissingTiles(markers.value)
+    }
+  },
+)
 
 // 监听瓦片索引加载完成，确保首次可见瓦片会被请求加载
 watch(
@@ -62,9 +61,13 @@ watch(isDragging, (dragging) => {
 })
 
 // 监听标记变化
-watch(() => markers.value, () => {
-  requestRender(markers.value)
-}, { deep: true })
+watch(
+  () => markers.value,
+  () => {
+    requestRender(markers.value)
+  },
+  { deep: true },
+)
 
 onMounted(() => {
   document.addEventListener('fullscreenchange', syncViewport)
@@ -72,7 +75,7 @@ onMounted(() => {
 
   // 初始渲染
   requestRender(markers.value)
-  
+
   // 初始加载缺失瓦片
   setTimeout(() => {
     loadMissingTiles(markers.value)

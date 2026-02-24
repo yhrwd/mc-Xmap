@@ -47,6 +47,39 @@ export function getMipManifestUrl(): string {
     : './tiles/mip/manifest.json'
 }
 
+// 自动检测并加载所有 markers_*.json 文件
+export async function getMarkersPartUrls(): Promise<string[]> {
+  if (mapSourceConfig.mode === 'remote') {
+    // 远程模式：需要手动提供
+    return [mapSourceConfig.remote.markersUrl]
+  }
+
+  // 本地模式：自动扫描 public 目录下所有 markers_*.json 文件
+  const urls: string[] = []
+  try {
+    // 尝试加载 markers_0.json, markers_1.json, ... 直到失败
+    for (let i = 0; i < 100; i++) {
+      const url = `./markers/markers_${i}.json`
+      const response = await fetch(url, { method: 'HEAD', cache: 'no-store' })
+      if (response.ok) {
+        urls.push(url)
+      } else if (i === 0) {
+        // 如果第一个文件就不存在，回退到旧格式
+        urls.push('./markers.json')
+        break
+      } else {
+        break
+      }
+    }
+  } catch (error) {
+    // 出错时使用旧格式
+    if (urls.length === 0) {
+      urls.push('./markers.json')
+    }
+  }
+  return urls
+}
+
 export function resolveTileResource(pathOrFilename: string): string {
   if (!pathOrFilename) return ''
   if (isAbsoluteUrl(pathOrFilename)) return pathOrFilename
