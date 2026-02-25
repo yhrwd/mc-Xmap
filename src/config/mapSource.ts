@@ -47,35 +47,65 @@ export function getMipManifestUrl(): string {
     : './tiles/mip/manifest.json'
 }
 
-// 自动检测并加载所有 markers_*.json 文件
+// 自动检测并加载所有 markers 文件夹下的 JSON 文件
 export async function getMarkersPartUrls(): Promise<string[]> {
   if (mapSourceConfig.mode === 'remote') {
     // 远程模式：需要手动提供
     return [mapSourceConfig.remote.markersUrl]
   }
 
-  // 本地模式：自动扫描 public 目录下所有 markers_*.json 文件
+  // 本地模式：扫描 public/markers 目录下所有 JSON 文件
   const urls: string[] = []
   try {
-    // 尝试加载 markers_0.json, markers_1.json, ... 直到失败
-    for (let i = 0; i < 100; i++) {
-      const url = `./markers/markers_${i}.json`
-      const response = await fetch(url, { method: 'HEAD', cache: 'no-store' })
-      if (response.ok) {
-        urls.push(url)
-      } else if (i === 0) {
-        // 如果第一个文件就不存在，回退到旧格式
-        urls.push('./markers.json')
-        break
-      } else {
-        break
+    // 尝试获取 markers 目录列表（通过尝试加载）
+    // 由于浏览器安全限制，我们无法直接列出目录，所以尝试常见文件名
+    // 先尝试加载 markers.json（旧格式）
+    let foundAny = false
+
+    // 尝试各种可能的 markers 文件名
+    const possibleFiles = [
+      './markers/markers_0.json',
+      './markers/markers_1.json',
+      './markers/markers_2.json',
+      './markers/markers_3.json',
+      './markers/markers_4.json',
+      './markers/markers_5.json',
+      './markers/markers_6.json',
+      './markers/markers_7.json',
+      './markers/markers_8.json',
+      './markers/markers_9.json',
+      './markers/markers_10.json',
+      './markers/markers_1_RX.json',
+      './markers/markers_2_other.json',
+      './markers/markers_creaking_village.json',
+      './markers/markers_lonely_fortress.json',
+      './markers/markers_photosynthesis_ruin.json',
+      './markers/markers_power_trial.json',
+      './markers/markers_sky_trial.json',
+      './markers/markers_stoxic_cavern.json',
+      './markers/markers_trident_trial.json',
+      './markers/markers_wax_wing_ruin.json',
+    ]
+
+    for (const url of possibleFiles) {
+      try {
+        const response = await fetch(url, { method: 'HEAD', cache: 'no-store' })
+        if (response.ok) {
+          urls.push(url)
+          foundAny = true
+        }
+      } catch {
+        // 忽略错误，继续尝试下一个
       }
+    }
+
+    // 如果没有找到任何文件，回退到旧格式
+    if (!foundAny) {
+      urls.push('./markers.json')
     }
   } catch (error) {
     // 出错时使用旧格式
-    if (urls.length === 0) {
-      urls.push('./markers.json')
-    }
+    urls.push('./markers.json')
   }
   return urls
 }

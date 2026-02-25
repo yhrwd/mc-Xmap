@@ -46,6 +46,8 @@ __screenshots__/
 
 map/map*
 
+public/markers/*
+
 # json files
 manifest.json
 overlays.json
