@@ -45,6 +45,7 @@ __screenshots__/
 *.webp
 
 map/map*
+map/mergerd_map/*
 
 public/markers/*
 
