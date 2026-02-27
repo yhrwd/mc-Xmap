@@ -90,12 +90,12 @@ npm run process-map
 
 ```json
 [
-  { 
-    "id": "spawn", 
-    "name": "出生点", 
-    "x": 0, 
-    "z": 0, 
-    "color": "#22c55e" 
+  {
+    "id": "spawn",
+    "name": "出生点",
+    "x": 0,
+    "z": 0,
+    "color": "#22c55e"
   }
 ]
 ```
@@ -121,4 +121,5 @@ public/markers.json   标记配置
 scripts/              预处理脚本
 src/                  前端源码
 ```
-###### *其实有部分代码是Python写的，转的js，因为js看的我头疼*
+
+###### _其实有部分代码是Python写的，转的js，因为js看的我头疼_
